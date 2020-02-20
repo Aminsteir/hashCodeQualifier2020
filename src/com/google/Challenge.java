@@ -7,11 +7,10 @@ public class Challenge {
 	public static void main(String[] args) throws IOException {
 		File input = new File("src/inputs/a_example.txt");
 		BufferedReader br = new BufferedReader(new FileReader(input));
-		File output = new File("src/output/a_example.txt");
-		BufferedWriter bw = new BufferedWriter(new FileWriter(input));
+		FileWriter fileWriter = new FileWriter("src/outputs/a.txt", false);
+		BufferedWriter bw = new BufferedWriter(fileWriter);
 		int[] firstLine = getNumbersFromLine(br);
 
-		final int numBooks = firstLine[0];
 		final int numLibraries = firstLine[1];
 		final int daysToScan = firstLine[2];
 
@@ -29,9 +28,9 @@ public class Challenge {
 			LinkedList<Book> books = new LinkedList<>();
 			for (int id: booksInLibrary)
 				books.add(new Book(id, scoresByBook[id]));
-			books.sort(Comparator.comparingInt(Book::getScore));
+			books.sort(Comparator.comparingInt(Book::getScore).reversed());
 
-			libraries.add(new Library(books, signUpLength, numBooksInLibrary, shippedPerDay));
+			libraries.add(new Library(books, i, signUpLength, numBooksInLibrary, shippedPerDay));
 		}
 
 		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).reversed());
@@ -48,7 +47,31 @@ public class Challenge {
 			}
 		}
 
+		bw.write(String.valueOf(librariesSignedUp.size()));
+		bw.newLine();
 
+		List<Book> booksUsed = new ArrayList<>();
+		int signUpLength = 0;
+
+		for (int i = librariesSignedUp.size() - 1; i > 0; i--) {
+			LinkedList<Book> booksToSend = new LinkedList<>();
+			for (Book book: librariesSignedUp.get(i).getBooksInLibrary()) {
+				if (!booksUsed.contains(book) && signUpLength + librariesSignedUp.get(i).getSignUpLength() < daysToScan) {
+					signUpLength += librariesSignedUp.get(i).getSignUpLength();
+					booksUsed.add(book);
+					booksToSend.add(book);
+				}
+			}
+			bw.write(String.format("%s %s", librariesSignedUp.get(i).getId(), booksToSend.size()));
+			bw.newLine();
+
+			for (Book book: booksToSend)
+				bw.write(book.getId() + " ");
+			bw.newLine();
+		}
+
+		bw.flush();
+		bw.close();
 	}
 
 	private static int[] getNumbersFromLine(BufferedReader br) throws IOException {
