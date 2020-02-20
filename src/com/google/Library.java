@@ -1,23 +1,26 @@
 package com.google;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Library {
-	private List<Book> booksInLibrary;
+	private LinkedList<Book> booksInLibrary;
 	private int signUpLength;
-	private int shippingLength;
+	private int numBooksInLibrary;
+	private int shippedPerDay;
 
-	public Library(List<Book> booksInLibrary, int signUpLength, int shippingLength) {
+	public Library(LinkedList<Book> booksInLibrary, int signUpLength, int numBooksInLibrary, int shippedPerDay) {
 		this.booksInLibrary = booksInLibrary;
 		this.signUpLength = signUpLength;
-		this.shippingLength = shippingLength;
+		this.numBooksInLibrary = numBooksInLibrary;
+		this.shippedPerDay = shippedPerDay;
 	}
 
-	public List<Book> getBooksInLibrary() {
+	public LinkedList<Book> getBooksInLibrary() {
 		return booksInLibrary;
 	}
 
-	public void setBooksInLibrary(List<Book> booksInLibrary) {
+	public void setBooksInLibrary(LinkedList<Book> booksInLibrary) {
 		this.booksInLibrary = booksInLibrary;
 	}
 
@@ -29,11 +32,29 @@ public class Library {
 		this.signUpLength = signUpLength;
 	}
 
-	public int getShippingLength() {
-		return shippingLength;
+	public int getNumBooksInLibrary() {
+		return numBooksInLibrary;
 	}
 
-	public void setShippingLength(int shippingLength) {
-		this.shippingLength = shippingLength;
+	public void setNumBooksInLibrary(int numBooksInLibrary) {
+		this.numBooksInLibrary = numBooksInLibrary;
+	}
+
+	public int getShippedPerDay() {
+		return shippedPerDay;
+	}
+
+	public void setShippedPerDay(int shippedPerDay) {
+		this.shippedPerDay = shippedPerDay;
+	}
+
+	@Override
+	public String toString() {
+		return "Library{" +
+						"\nbooksInLibrary=" + booksInLibrary +
+						"\n, signUpLength=" + signUpLength +
+						"\n, numBooksInLibrary=" + numBooksInLibrary +
+						"\n, shippedPerDay=" + shippedPerDay +
+						"\n}";
 	}
 }
