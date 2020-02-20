@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Challenge {
 	public static void main(String[] args) throws IOException {
-		File input = new File("src/inputs/f_libraries_of_the_world.txt");
+		File input = new File("src/inputs/f.txt");
 		BufferedReader br = new BufferedReader(new FileReader(input));
 		FileWriter fileWriter = new FileWriter("src/outputs/f.txt", false);
 		BufferedWriter bw = new BufferedWriter(fileWriter);
