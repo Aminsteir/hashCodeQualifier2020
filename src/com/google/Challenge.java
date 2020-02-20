@@ -5,9 +5,9 @@ import java.util.*;
 
 public class Challenge {
 	public static void main(String[] args) throws IOException {
-		File input = new File("src/inputs/d_tough_choices.txt");
+		File input = new File("src/inputs/f_libraries_of_the_world.txt");
 		BufferedReader br = new BufferedReader(new FileReader(input));
-		FileWriter fileWriter = new FileWriter("src/outputs/d.txt", false);
+		FileWriter fileWriter = new FileWriter("src/outputs/f.txt", false);
 		BufferedWriter bw = new BufferedWriter(fileWriter);
 		int[] firstLine = getNumbersFromLine(br);
 
@@ -16,7 +16,7 @@ public class Challenge {
 
 		int[] scoresByBook = getNumbersFromLine(br);
 
-		LinkedList<Library> libraries = new LinkedList<>();
+		List<Library> libraries = new ArrayList<>();
 
 		for (int i = 0; i < numLibraries; i++) {
 			int[] libraryDetails = getNumbersFromLine(br);
@@ -25,7 +25,7 @@ public class Challenge {
 			int shippedPerDay = libraryDetails[2];
 
 			int[] booksInLibrary = getNumbersFromLine(br);
-			LinkedList<Book> books = new LinkedList<>();
+			List<Book> books = new ArrayList<>();
 			for (int id: booksInLibrary)
 				books.add(new Book(id, scoresByBook[id]));
 			books.sort(Comparator.comparingInt(Book::getScore).reversed());
@@ -35,7 +35,7 @@ public class Challenge {
 
 		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).reversed());
 
-		LinkedList<Library> librariesSignedUp = new LinkedList<>();
+		List<Library> librariesSignedUp = new ArrayList<>();
 		int time = daysToScan;
 
 		for (Library library: libraries) {
@@ -52,18 +52,26 @@ public class Challenge {
 
 		List<Book> booksUsed = new ArrayList<>();
 		int currentDay = 0;
+		int booksSentDay = 0;
 
 		for (int i = librariesSignedUp.size() - 1; i >= 0; i--) {
-			LinkedList<Book> booksToSend = new LinkedList<>();
+			List<Book> booksToSend = new ArrayList<>();
 			Library library = librariesSignedUp.get(i);
 			currentDay += library.getSignUpLength();
 			for (Book book: library.getBooksInLibrary()) {
 				if (!booksUsed.contains(book) && currentDay < daysToScan) {
-					currentDay++;
+					booksSentDay++;
+					if (booksSentDay == library.getShippedPerDay()) {
+						booksSentDay = 0;
+						currentDay++;
+					}
 					booksUsed.add(book);
 					booksToSend.add(book);
 				}
 			}
+			if (booksToSend.size() == 0)
+				continue;
+
 			bw.write(String.format("%s %s", library.getId(), booksToSend.size()));
 			bw.newLine();
 

@@ -1,15 +1,16 @@
 package com.google;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class Library {
-	private LinkedList<Book> booksInLibrary;
+	private List<Book> booksInLibrary;
 	private int id;
 	private int signUpLength;
 	private int numBooksInLibrary;
 	private int shippedPerDay;
 
-	public Library(LinkedList<Book> booksInLibrary, int id, int signUpLength, int numBooksInLibrary, int shippedPerDay) {
+	public Library(List<Book> booksInLibrary, int id, int signUpLength, int numBooksInLibrary, int shippedPerDay) {
 		this.booksInLibrary = booksInLibrary;
 		this.signUpLength = signUpLength;
 		this.numBooksInLibrary = numBooksInLibrary;
@@ -17,11 +18,11 @@ public class Library {
 		this.id = id;
 	}
 
-	public LinkedList<Book> getBooksInLibrary() {
+	public List<Book> getBooksInLibrary() {
 		return booksInLibrary;
 	}
 
-	public void setBooksInLibrary(LinkedList<Book> booksInLibrary) {
+	public void setBooksInLibrary(List<Book> booksInLibrary) {
 		this.booksInLibrary = booksInLibrary;
 	}
 
