@@ -5,7 +5,12 @@ import java.util.*;
 
 public class Challenge {
 	public static void main(String[] args) throws IOException {
-		String filename = "f.txt";
+		char[] arr = new char[] {'a','b','c','d','e','f'};
+		for (char sub: arr)
+			runChallenge(sub + ".txt");
+	}
+
+	private static void runChallenge(String filename) throws IOException {
 		File input = new File(String.format("src/inputs/%s", filename));
 		BufferedReader br = new BufferedReader(new FileReader(input));
 		FileWriter fileWriter = new FileWriter(String.format("src/outputs/%s", filename), false);
@@ -34,7 +39,7 @@ public class Challenge {
 			libraries.add(new Library(books, i, signUpLength, numBooksInLibrary, shippedPerDay));
 		}
 
-		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).reversed());
+		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
 
 		List<Library> librariesSignedUp = new ArrayList<>();
 		int time = daysToScan;
@@ -53,7 +58,7 @@ public class Challenge {
 
 		List<Integer> idsUsed = new ArrayList<>();
 		int currentDay = 0;
-		for (int i = librariesSignedUp.size() - 1; i >= 0; i--) {
+		for (int i = 0; i < librariesSignedUp.size(); i++) {
 			int currentDayTemp = currentDay;
 			int booksSentDay = 0;
 			List<Book> booksToSend = new ArrayList<>();
