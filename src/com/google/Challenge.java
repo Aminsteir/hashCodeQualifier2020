@@ -5,9 +5,10 @@ import java.util.*;
 
 public class Challenge {
 	public static void main(String[] args) throws IOException {
-		File input = new File("src/inputs/f.txt");
+		String filename = "d.txt";
+		File input = new File(String.format("src/inputs/%s", filename));
 		BufferedReader br = new BufferedReader(new FileReader(input));
-		FileWriter fileWriter = new FileWriter("src/outputs/f.txt", false);
+		FileWriter fileWriter = new FileWriter(String.format("src/outputs/%s", filename), false);
 		BufferedWriter bw = new BufferedWriter(fileWriter);
 		int[] firstLine = getNumbersFromLine(br);
 
@@ -50,33 +51,38 @@ public class Challenge {
 		bw.write(String.valueOf(librariesSignedUp.size()));
 		bw.newLine();
 
-		List<Book> booksUsed = new ArrayList<>();
+		List<Integer> idsUsed = new ArrayList<>();
 		int currentDay = 0;
-		int booksSentDay = 0;
-
 		for (int i = librariesSignedUp.size() - 1; i >= 0; i--) {
+			int currentDayTemp = currentDay;
+			int booksSentDay = 0;
 			List<Book> booksToSend = new ArrayList<>();
 			Library library = librariesSignedUp.get(i);
-			currentDay += library.getSignUpLength();
+			int signUpLength = library.getSignUpLength();
+			currentDay += signUpLength;
+			currentDayTemp += signUpLength;
 			for (Book book: library.getBooksInLibrary()) {
-				if (!booksUsed.contains(book) && currentDay < daysToScan) {
+				if (!idsUsed.contains(book.getId()) && currentDayTemp < daysToScan) {
 					booksSentDay++;
 					if (booksSentDay == library.getShippedPerDay()) {
 						booksSentDay = 0;
-						currentDay++;
+						currentDayTemp++;
 					}
-					booksUsed.add(book);
+					idsUsed.add(book.getId());
 					booksToSend.add(book);
 				}
 			}
+
 			if (booksToSend.size() == 0)
 				continue;
 
 			bw.write(String.format("%s %s", library.getId(), booksToSend.size()));
 			bw.newLine();
 
+			StringBuilder builder = new StringBuilder();
 			for (Book book: booksToSend)
-				bw.write(book.getId() + " ");
+				builder.append(book.getId()).append(" ");
+			bw.write(builder.toString().trim());
 			bw.newLine();
 		}
 
