@@ -5,9 +5,9 @@ import java.util.*;
 
 public class Challenge {
 	public static void main(String[] args) throws IOException {
-		File input = new File("src/inputs/a_example.txt");
+		File input = new File("src/inputs/d_tough_choices.txt");
 		BufferedReader br = new BufferedReader(new FileReader(input));
-		FileWriter fileWriter = new FileWriter("src/outputs/a.txt", false);
+		FileWriter fileWriter = new FileWriter("src/outputs/d.txt", false);
 		BufferedWriter bw = new BufferedWriter(fileWriter);
 		int[] firstLine = getNumbersFromLine(br);
 
@@ -51,18 +51,20 @@ public class Challenge {
 		bw.newLine();
 
 		List<Book> booksUsed = new ArrayList<>();
-		int signUpLength = 0;
+		int currentDay = 0;
 
-		for (int i = librariesSignedUp.size() - 1; i > 0; i--) {
+		for (int i = librariesSignedUp.size() - 1; i >= 0; i--) {
 			LinkedList<Book> booksToSend = new LinkedList<>();
-			for (Book book: librariesSignedUp.get(i).getBooksInLibrary()) {
-				if (!booksUsed.contains(book) && signUpLength + librariesSignedUp.get(i).getSignUpLength() < daysToScan) {
-					signUpLength += librariesSignedUp.get(i).getSignUpLength();
+			Library library = librariesSignedUp.get(i);
+			currentDay += library.getSignUpLength();
+			for (Book book: library.getBooksInLibrary()) {
+				if (!booksUsed.contains(book) && currentDay < daysToScan) {
+					currentDay++;
 					booksUsed.add(book);
 					booksToSend.add(book);
 				}
 			}
-			bw.write(String.format("%s %s", librariesSignedUp.get(i).getId(), booksToSend.size()));
+			bw.write(String.format("%s %s", library.getId(), booksToSend.size()));
 			bw.newLine();
 
 			for (Book book: booksToSend)
