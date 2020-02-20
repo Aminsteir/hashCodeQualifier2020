@@ -5,8 +5,10 @@ import java.util.*;
 
 public class Challenge {
 	public static void main(String[] args) throws IOException {
-		File file = new File("src/inputs/a_example.txt");
-		BufferedReader br = new BufferedReader(new FileReader(file));
+		File input = new File("src/inputs/a_example.txt");
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		File output = new File("src/output/a_example.txt");
+		BufferedWriter bw = new BufferedWriter(new FileWriter(input));
 		int[] firstLine = getNumbersFromLine(br);
 
 		final int numBooks = firstLine[0];
@@ -27,11 +29,13 @@ public class Challenge {
 			LinkedList<Book> books = new LinkedList<>();
 			for (int id: booksInLibrary)
 				books.add(new Book(id, scoresByBook[id]));
+			books.sort(Comparator.comparingInt(Book::getScore));
 
 			libraries.add(new Library(books, signUpLength, numBooksInLibrary, shippedPerDay));
 		}
 
-		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
+		/*libraries.sort(Comparator.comparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));*/
+		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).reversed());
 
 		System.out.println(libraries.toString());
 	}

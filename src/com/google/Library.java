@@ -1,7 +1,6 @@
 package com.google;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class Library {
 	private LinkedList<Book> booksInLibrary;
