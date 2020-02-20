@@ -34,10 +34,21 @@ public class Challenge {
 			libraries.add(new Library(books, signUpLength, numBooksInLibrary, shippedPerDay));
 		}
 
-		/*libraries.sort(Comparator.comparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));*/
 		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).reversed());
 
-		System.out.println(libraries.toString());
+		LinkedList<Library> librariesSignedUp = new LinkedList<>();
+		int time = daysToScan;
+
+		for (Library library: libraries) {
+			if (library.getSignUpLength() < time) {
+				librariesSignedUp.add(library);
+				time -= library.getSignUpLength();
+			} else {
+				break;
+			}
+		}
+
+
 	}
 
 	private static int[] getNumbersFromLine(BufferedReader br) throws IOException {
