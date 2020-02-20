@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Challenge {
 	public static void main(String[] args) throws IOException {
-		String filename = "d.txt";
+		String filename = "f.txt";
 		File input = new File(String.format("src/inputs/%s", filename));
 		BufferedReader br = new BufferedReader(new FileReader(input));
 		FileWriter fileWriter = new FileWriter(String.format("src/outputs/%s", filename), false);
