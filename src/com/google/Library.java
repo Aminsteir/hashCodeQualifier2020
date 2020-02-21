@@ -58,6 +58,13 @@ public class Library {
 		this.id = id;
 	}
 
+	public int getScoreFromBooks() {
+		int score = 0;
+		for (Book book : booksInLibrary)
+			score += book.getScore();
+		return score;
+	}
+
 	@Override
 	public String toString() {
 		return "Library{" +

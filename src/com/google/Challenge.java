@@ -39,8 +39,10 @@ public class Challenge {
 			libraries.add(new Library(books, i, signUpLength, numBooksInLibrary, shippedPerDay));
 		}
 
-		libraries.sort(Comparator.comparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
+		libraries.sort(Comparator.comparingInt(Library::getScoreFromBooks).thenComparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
 
+
+		// TODO: TRY TO REMOVE THIS FOR LOOP AND INSTEAD MAKE IT DYNAMIC IN THE BOOK TO SEND FOR LOOP --> IF CURRENTDAY SOMETHING IS GREATER THAN MAX DAYS QUIT OR SOMETHING LIKE THAT
 		List<Library> librariesSignedUp = new ArrayList<>();
 		int time = daysToScan;
 
@@ -53,23 +55,28 @@ public class Challenge {
 			}
 		}
 
+		librariesSignedUp.sort(Comparator.comparingInt(Library::getScoreFromBooks).thenComparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
+
+		//TODO: REMOVE DUPLICATE BOOK ID'S FROM ALL LIBRARIES
+
+		librariesSignedUp.sort(Comparator.comparingInt(Library::getScoreFromBooks).thenComparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
+
 		bw.write(String.valueOf(librariesSignedUp.size()));
 		bw.newLine();
 
-		List<Integer> idsUsed = new ArrayList<>();
 		int currentDay = 0;
-		for (int i = 0; i < librariesSignedUp.size(); i++) {
-			int currentDayTemp = currentDay;
+		// TODO: MAKE THE BOOKSTOSEND BE A SUBLIST OF THE BOOKS SO WE DON'T USE ANOTHER FOR-LOOP
+		List<Integer> idsUsed = new ArrayList<>();
+		for (Library value : librariesSignedUp) {
 			int booksSentDay = 0;
 			List<Book> booksToSend = new ArrayList<>();
-			Library library = librariesSignedUp.get(i);
-			int signUpLength = library.getSignUpLength();
+			int signUpLength = value.getSignUpLength();
 			currentDay += signUpLength;
-			currentDayTemp += signUpLength;
-			for (Book book: library.getBooksInLibrary()) {
+			int currentDayTemp = currentDay;
+			for (Book book : value.getBooksInLibrary()) {
 				if (!idsUsed.contains(book.getId()) && currentDayTemp < daysToScan) {
 					booksSentDay++;
-					if (booksSentDay == library.getShippedPerDay()) {
+					if (booksSentDay == value.getShippedPerDay()) {
 						booksSentDay = 0;
 						currentDayTemp++;
 					}
@@ -78,14 +85,11 @@ public class Challenge {
 				}
 			}
 
-			if (booksToSend.size() == 0)
-				continue;
-
-			bw.write(String.format("%s %s", library.getId(), booksToSend.size()));
+			bw.write(String.format("%s %s", value.getId(), booksToSend.size()));
 			bw.newLine();
 
 			StringBuilder builder = new StringBuilder();
-			for (Book book: booksToSend)
+			for (Book book : booksToSend)
 				builder.append(book.getId()).append(" ");
 			bw.write(builder.toString().trim());
 			bw.newLine();
