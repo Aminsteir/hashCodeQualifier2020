@@ -39,25 +39,9 @@ public class Challenge {
 			libraries.add(new Library(books, i, signUpLength, numBooksInLibrary, shippedPerDay));
 		}
 
-		libraries.sort(Comparator.comparingInt(Library::getScoreFromBooks).thenComparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
-
-		List<Library> librariesSignedUp = new ArrayList<>();
-		int time = daysToScan;
-
-		libraries.sort(Comparator.comparingInt(Library::getScoreFromBooks).reversed());
-
-		for (Library library: libraries) {
-			if (library.getSignUpLength() < time) {
-				librariesSignedUp.add(library);
-				time -= library.getSignUpLength();
-			} else {
-				break;
-			}
-		}
-
 		List<Integer> idsSigned = new ArrayList<>();
-		for (int i = 0; i < librariesSignedUp.size(); i++) {
-			List<Book> books = librariesSignedUp.get(i).getBooksInLibrary();
+		for (int i = 0; i < libraries.size(); i++) {
+			List<Book> books = libraries.get(i).getBooksInLibrary();
 			for (int j = 0; j < books.size(); j++) {
 				if (idsSigned.contains(books.get(j).getId())) {
 					books.remove(j);
@@ -67,17 +51,17 @@ public class Challenge {
 				}
 			}
 			if (books.size() == 0) {
-				librariesSignedUp.remove(i);
+				libraries.remove(i);
 				i--;
 			}
 		}
-		//TODO: REMOVE DUPLICATE BOOK ID'S FROM ALL LIBRARIES
 
-		librariesSignedUp.sort(Comparator.comparingInt(Library::getScoreFromBooks).reversed());
+		//TODO: MAKE BETTER COMPARATOR
+		libraries.sort(Comparator.comparingInt(Library::getScoreFromBooks).reversed());
 
 		int count = 0;
 		int currentDay = 0;
-		for (Library value: librariesSignedUp) {
+		for (Library value: libraries) {
 			int signUpLength = value.getSignUpLength();
 			if (currentDay + signUpLength > daysToScan) {
 				break;
@@ -91,9 +75,8 @@ public class Challenge {
 		bw.newLine();
 
 		// TODO: MAKE THE BOOKSTOSEND BE A SUBLIST OF THE BOOKS SO WE DON'T USE ANOTHER FOR-LOOP
-		// TODO: REMOVE THE IDS USED CONTAINS ~~ WE REMOVED DUPLICATES
 		currentDay = 0;
-		for (Library value : librariesSignedUp) {
+		for (Library value : libraries) {
 			int booksSentDay = 0;
 			List<Book> booksToSend = new ArrayList<>();
 			int signUpLength = value.getSignUpLength();
