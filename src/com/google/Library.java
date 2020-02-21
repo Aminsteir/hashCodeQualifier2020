@@ -73,6 +73,7 @@ public class Library {
 						"\n, numBooksInLibrary=" + numBooksInLibrary +
 						"\n, shippedPerDay=" + shippedPerDay +
 						"\n, id=" + id +
+						"\n, totalScore=" + getScoreFromBooks() +
 						"\n}";
 	}
 }

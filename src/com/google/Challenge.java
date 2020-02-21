@@ -41,10 +41,10 @@ public class Challenge {
 
 		libraries.sort(Comparator.comparingInt(Library::getScoreFromBooks).thenComparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
 
-
-		// TODO: TRY TO REMOVE THIS FOR LOOP AND INSTEAD MAKE IT DYNAMIC IN THE BOOK TO SEND FOR LOOP --> IF CURRENTDAY SOMETHING IS GREATER THAN MAX DAYS QUIT OR SOMETHING LIKE THAT
 		List<Library> librariesSignedUp = new ArrayList<>();
 		int time = daysToScan;
+
+		libraries.sort(Comparator.comparingInt(Library::getScoreFromBooks).reversed());
 
 		for (Library library: libraries) {
 			if (library.getSignUpLength() < time) {
@@ -55,32 +55,59 @@ public class Challenge {
 			}
 		}
 
-		librariesSignedUp.sort(Comparator.comparingInt(Library::getScoreFromBooks).thenComparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
-
+		List<Integer> idsSigned = new ArrayList<>();
+		for (int i = 0; i < librariesSignedUp.size(); i++) {
+			List<Book> books = librariesSignedUp.get(i).getBooksInLibrary();
+			for (int j = 0; j < books.size(); j++) {
+				if (idsSigned.contains(books.get(j).getId())) {
+					books.remove(j);
+					j--;
+				} else {
+					idsSigned.add(books.get(j).getId());
+				}
+			}
+			if (books.size() == 0) {
+				librariesSignedUp.remove(i);
+				i--;
+			}
+		}
 		//TODO: REMOVE DUPLICATE BOOK ID'S FROM ALL LIBRARIES
 
-		librariesSignedUp.sort(Comparator.comparingInt(Library::getScoreFromBooks).thenComparingInt(Library::getSignUpLength).thenComparingInt(Library::getShippedPerDay));
+		librariesSignedUp.sort(Comparator.comparingInt(Library::getScoreFromBooks).reversed());
 
-		bw.write(String.valueOf(librariesSignedUp.size()));
+		int count = 0;
+		int currentDay = 0;
+		for (Library value: librariesSignedUp) {
+			int signUpLength = value.getSignUpLength();
+			if (currentDay + signUpLength > daysToScan) {
+				break;
+			} else {
+				count++;
+				currentDay += signUpLength;
+			}
+		}
+
+		bw.write(String.valueOf(count));
 		bw.newLine();
 
-		int currentDay = 0;
 		// TODO: MAKE THE BOOKSTOSEND BE A SUBLIST OF THE BOOKS SO WE DON'T USE ANOTHER FOR-LOOP
-		List<Integer> idsUsed = new ArrayList<>();
+		// TODO: REMOVE THE IDS USED CONTAINS ~~ WE REMOVED DUPLICATES
+		currentDay = 0;
 		for (Library value : librariesSignedUp) {
 			int booksSentDay = 0;
 			List<Book> booksToSend = new ArrayList<>();
 			int signUpLength = value.getSignUpLength();
+			if (currentDay + signUpLength > daysToScan)
+				break;
 			currentDay += signUpLength;
 			int currentDayTemp = currentDay;
 			for (Book book : value.getBooksInLibrary()) {
-				if (!idsUsed.contains(book.getId()) && currentDayTemp < daysToScan) {
+				if (currentDayTemp < daysToScan) {
 					booksSentDay++;
 					if (booksSentDay == value.getShippedPerDay()) {
 						booksSentDay = 0;
 						currentDayTemp++;
 					}
-					idsUsed.add(book.getId());
 					booksToSend.add(book);
 				}
 			}
